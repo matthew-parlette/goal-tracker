@@ -8,6 +8,7 @@
 		{% for goal in goals %}
       {% module Template("goal.html", goal=goal) %}
     {% end %}
+    {% module Template("add.html") %}
 {% end %}
 
 {% block footer %}

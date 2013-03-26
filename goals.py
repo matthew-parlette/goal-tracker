@@ -16,7 +16,8 @@ coll = None
 class Application(tornado.web.Application):
   def __init__(self):
     handlers=[
-      (r"/", MainHandler)
+      (r"/", MainHandler),
+      (r"/add", NewGoalHandler),
     ]
     
     settings = dict(
@@ -29,7 +30,7 @@ class Application(tornado.web.Application):
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
     #goals is a cursor object
-    goals = coll.find()
+    goals = coll.find({'title' : {'$exists':True}}) #title is required in goals.html
     print "found %s goals" % str(goals.count())
     
     self.render(
@@ -42,18 +43,19 @@ class MainHandler(tornado.web.RequestHandler):
 
 class NewGoalHandler(tornado.web.RequestHandler):
   def post(self):
-    goal = self.request.body
+    goal = self.get_argument('goal','')
+    print str(goal)
     insert_id = coll.insert({
-      'goal': goal,
+      'title': goal,
       'created': datetime.datetime.utcnow(),
       'done': 0,
       'deleted': 0,
     })
-    print "Successfully added %s" % (str(insert_id))
+    #print "Successfully added %s" % (str(insert_id))
+    self.redirect("/")
 
 if __name__ == "__main__":
   db = pymongo.Connection()['test']
-  #print "collections: %s" % str(db.collection_names())
   coll = db['test']['goals']
   
   app = Application()
