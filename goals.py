@@ -5,6 +5,7 @@ import logging
 import pymongo
 import datetime
 
+from bson.objectid import ObjectId
 from tornado.options import define,options
 
 define("port", default=8000, help="run on the given port", type=int)
@@ -13,11 +14,15 @@ define("port", default=8000, help="run on the given port", type=int)
 db = None
 coll = None
 
+#Notes
+#Quick pymongo reference: http://www.youlikeprogramming.com/2010/12/python-and-mongodb-using-pymongo-quick-reference/
+
 class Application(tornado.web.Application):
   def __init__(self):
     handlers=[
       (r"/", MainHandler),
       (r"/add", NewGoalHandler),
+      (r"/delete/([\w]+)", DeleteGoalHandler),
     ]
     
     settings = dict(
@@ -30,7 +35,7 @@ class Application(tornado.web.Application):
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
     #goals is a cursor object
-    goals = coll.find({'title' : {'$exists':True}}) #title is required in goals.html
+    goals = coll.find({'title' : {'$exists':True}},{'deleted':0}) #title is required in goals.html
     print "found %s goals" % str(goals.count())
     
     self.render(
@@ -51,8 +56,20 @@ class NewGoalHandler(tornado.web.RequestHandler):
       'done': 0,
       'deleted': 0,
     })
-    #print "Successfully added %s" % (str(insert_id))
+    print "Successfully added %s" % (str(insert_id))
     self.redirect("/")
+
+class DeleteGoalHandler(tornado.web.RequestHandler):
+  def post(self,id):
+    print "deleting goal (id %s)" % str(id)
+    coll.update(
+      { #where
+        '_id': ObjectId(id)
+      },
+      { #action
+        'deleted': '1'
+      }
+    )
 
 if __name__ == "__main__":
   db = pymongo.Connection()['test']

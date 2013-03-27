@@ -1,1 +1,5 @@
-<div class="goal"><p>{{ goal['title'] }}</p></div>
+<div class="goal" id="{{goal['_id']}}">
+  <p>{{ goal['title'] }}
+ <a href="javascript:post_delete('{{goal['_id']}}')">delete</a>
+  </p>
+</div>
