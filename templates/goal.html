@@ -1,7 +1,11 @@
 <div class="goal {% if 'active' in goal and goal['active'] %}active{% else %}inactive{% end %}" 
 id="{{goal['_id']}}">
   <p>{{ goal['title'] }}
- <a href="javascript:activate('{{goal['_id']}}')">activate</a>
+  {% if 'active' in goal and goal['active'] %}
+ <a class="enable" href="javascript:deactivate('{{goal['_id']}}')">deactivate</a>
+  {% else %}
+ <a class="enable" href="javascript:activate('{{goal['_id']}}')">activate</a>
+  {% end %}
  <a href="javascript:post_delete('{{goal['_id']}}')">delete</a>
   </p>
 </div>

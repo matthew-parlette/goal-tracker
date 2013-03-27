@@ -24,7 +24,7 @@ class Application(tornado.web.Application):
       (r"/add", NewGoalHandler),
       (r"/delete/([\w]+)", DeleteGoalHandler),
       (r"/activate/([\w]+)", ActivateHandler),
-      #(r"/deactivate/([\w]+)", DeactivateHandler),
+      (r"/deactivate/([\w]+)", DeactivateHandler),
     ]
     
     settings = dict(
@@ -78,7 +78,7 @@ class DeleteGoalHandler(tornado.web.RequestHandler):
         '_id': ObjectId(id)
       },
       { #action
-        '$set': {'deleted': '1'},
+        '$set': {'deleted': 1},
       }
     )
 
@@ -90,7 +90,19 @@ class ActivateHandler(tornado.web.RequestHandler):
         '_id': ObjectId(id)
       },
       { #action
-        '$set': {'active': '1'},
+        '$set': {'active': 1},
+      }
+    )
+
+class DeactivateHandler(tornado.web.RequestHandler):
+  def post(self,id):
+    print "deactivating goal (id %s)" % str(id)
+    coll.update(
+      { #where
+        '_id': ObjectId(id)
+      },
+      { #action
+        '$set': {'active': 0},
       }
     )
 
