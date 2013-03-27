@@ -23,6 +23,8 @@ class Application(tornado.web.Application):
       (r"/", MainHandler),
       (r"/add", NewGoalHandler),
       (r"/delete/([\w]+)", DeleteGoalHandler),
+      (r"/activate/([\w]+)", ActivateHandler),
+      #(r"/deactivate/([\w]+)", DeactivateHandler),
     ]
     
     settings = dict(
@@ -35,8 +37,16 @@ class Application(tornado.web.Application):
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
     #goals is a cursor object
-    goals = coll.find({'title' : {'$exists':True}},{'deleted':0}) #title is required in goals.html
-    print "found %s goals" % str(goals.count())
+    goals_cursor = coll.find({'title' : {'$exists':True}},{'deleted':0}) #title is required in goals.html
+    print "found %s goals" % str(goals_cursor.count())
+    
+    #Build list of goals, active ones at the top
+    goals = list()
+    for goal in goals_cursor:
+      if 'active' in goal and goal['active']:
+        goals.insert(0,goal)
+      else:
+        goals.append(goal)
     
     self.render(
       "index.html",
@@ -55,6 +65,7 @@ class NewGoalHandler(tornado.web.RequestHandler):
       'created': datetime.datetime.utcnow(),
       'done': 0,
       'deleted': 0,
+      'active': 0,
     })
     print "Successfully added %s" % (str(insert_id))
     self.redirect("/")
@@ -67,7 +78,19 @@ class DeleteGoalHandler(tornado.web.RequestHandler):
         '_id': ObjectId(id)
       },
       { #action
-        'deleted': '1'
+        '$set': {'deleted': '1'},
+      }
+    )
+
+class ActivateHandler(tornado.web.RequestHandler):
+  def post(self,id):
+    print "activating goal (id %s)" % str(id)
+    coll.update(
+      { #where
+        '_id': ObjectId(id)
+      },
+      { #action
+        '$set': {'active': '1'},
       }
     )
 

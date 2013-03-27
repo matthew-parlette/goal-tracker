@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>{{ escape(page_title) }}</title>
+  <link rel="stylesheet" href="{{ static_url("site.css") }}" type="text/css"/>
 </head>
 <body>
 	<div id="container">
@@ -26,5 +27,10 @@
     alert("sending "+"/delete/"+id)
     $.post("/delete/"+id);
     $('#'+id).hide('normal')
+  }
+  function activate(id){
+    alert("sending "+"/activate/"+id)
+    $.post("/activate/"+id);
+    $('#'+id).removeClass('inactive').addClass('active')
   }
 </script>
