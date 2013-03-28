@@ -2,11 +2,11 @@
 id="{{goal['_id']}}">
   <p class="inline">{{ goal['title'] }}</p>
   <div class="inline buttons">
-  {% if 'active' in goal and goal['active'] %}
+<!--  {% if 'active' in goal and goal['active'] %}
  <a class="button enable" href="javascript:deactivate('{{goal['_id']}}')">deactivate</a>
   {% else %}
  <a class="button enable" href="javascript:activate('{{goal['_id']}}')">activate</a>
-  {% end %}
+  {% end %} -->
  <a class="button" href="javascript:post_delete('{{goal['_id']}}')">delete</a>
   </div>
 </div>

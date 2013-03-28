@@ -52,7 +52,7 @@ class MainHandler(tornado.web.RequestHandler):
       "index.html",
       page_title = "Here's a page",
       header_text = "Goal List",
-      footer_text = "footer",
+      footer_text = "Site by Matt Parlette",
       goals = goals,
     )
 

@@ -36,4 +36,9 @@
     $.post("/deactivate/"+id);
     $('#'+id).removeClass('active').addClass('inactive');
   }
+  function toggle(id){
+    if($('#'+id).hasClass('active')){deactivate(id);}
+    else{activate(id);}
+  }
+  $('.goal').click(function(event){toggle(event.target.id);})
 </script>
