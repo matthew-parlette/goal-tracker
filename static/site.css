@@ -1,3 +1,83 @@
-.active{
-  color: green;
+hr {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc); 
+    background-image:    -moz-linear-gradient(left, #ccc, #333, #ccc); 
+    background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc); 
+    background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
+    width: 90%;
+}
+
+header {
+  padding-top: 2%;
+  background-color: white;
+}
+
+header h1 {
+  font-size: 3em;
+  margin: .3em;
+  color: black;
+  font-variant: small-caps;
+  text-align: center;
+}
+
+body {
+  background-color: #2A120A;
+}
+
+#container {
+  background-color: white;
+}
+
+#main {
+
+}
+
+#content {
+  width: 95%;
+  margin: 5%;
+}
+
+footer {
+  text-align: center;
+}
+
+.goal {
+  width: 90%;
+  border: 1px solid black;
+  margin-bottom: 1em;
+  padding: 0 .5em;
+}
+
+.goal p {
+  text-indent: 1em;
+  margin: 0;
+}
+
+.active {
+  border: 2px solid #00FF00;
+  color: black;
+}
+
+.inactive {
+  border: 1px solid #585858;
+}
+
+.buttons {
+  float: right;
+}
+
+.button {
+  font-variant: small-caps;
+  font-size: .8em;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.add input{
+  width: 90%;
+  font-variant: small-caps;
 }

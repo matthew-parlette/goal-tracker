@@ -24,18 +24,15 @@
 
 <script language="javascript">
   function post_delete(id){
-    alert("sending "+"/delete/"+id)
     $.post("/delete/"+id);
     $('#'+id).hide('slow');
   }
   function activate(id){
-    alert("sending "+"/activate/"+id)
     $.post("/activate/"+id);
     $('#'+id).removeClass('inactive').addClass('active');
     //$('#'+id > '.enable').replaceWith('<a class="enable" href="javascript:deactivate("{{goal["_id"]}}")">deactivate</a>');
   }
   function deactivate(id){
-    alert("sending "+"/deactivate/"+id)
     $.post("/deactivate/"+id);
     $('#'+id).removeClass('active').addClass('inactive');
   }
