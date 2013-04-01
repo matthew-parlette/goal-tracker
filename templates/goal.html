@@ -1,5 +1,6 @@
 <div class="goal {% if 'active' in goal and goal['active'] %}active{% else %}inactive{% end %}" 
 id="{{goal['_id']}}">
+  <input class="inline complete" type="checkbox" onclick="javascript:toggle_done('{{goal['_id']}}',this)"/>
   <p class="inline">{{ goal['title'] }}</p>
   <div class="inline buttons">
 <!--  {% if 'active' in goal and goal['active'] %}

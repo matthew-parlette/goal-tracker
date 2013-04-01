@@ -25,6 +25,7 @@ class Application(tornado.web.Application):
       (r"/delete/([\w]+)", DeleteHandler),
       (r"/activate/([\w]+)", ActivateHandler),
       (r"/deactivate/([\w]+)", DeactivateHandler),
+      (r"/complete/([\w]*)", CompleteHandler),
     ]
     
     settings = dict(
@@ -46,6 +47,7 @@ class MainHandler(tornado.web.RequestHandler):
         {'$and': [
           {'title' : {'$exists':True}}, #title is required in goals.html
           {'deleted':0},
+          {'done':0},
           {'collection': {'$exists':True}},
           {'collection': collection},
         ]}
@@ -56,6 +58,7 @@ class MainHandler(tornado.web.RequestHandler):
         {'$and': [
           {'title' : {'$exists':True}}, #title is required in goals.html
           {'deleted':0},
+          {'done':0},
           {'$or': [
             {'collection': {'$exists':False}},
             {'collection': collection},
@@ -129,6 +132,21 @@ class DeactivateHandler(tornado.web.RequestHandler):
       },
       { #action
         '$set': {'active': 0},
+      }
+    )
+
+class CompleteHandler(tornado.web.RequestHandler):
+  def post(self,id):
+    #Get the complete argument, defaults to 1 (true)
+    done = int(self.get_argument('complete',1,True))
+    print "checked 'done' argument: %s" % str(done)
+    print "toggling goal done status (id %s)" % str(id)
+    coll.update(
+      { #where
+        '_id': ObjectId(id)
+      },
+      { #action
+        '$set': {'done': done},
       }
     )
 

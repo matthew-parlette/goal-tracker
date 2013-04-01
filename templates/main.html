@@ -42,6 +42,10 @@
     if($('#'+id).hasClass('active')){deactivate(id);}
     else{activate(id);}
   }
+  function toggle_done(id,checkbox){
+    var done = checkbox.checked ? 1 : 0;
+    $.post("/complete/"+id+"?complete="+done);
+  }
   function build_collections(json_list){
     for (var i in json_list) {
       $('#select_collection').append('<option value="'+json_list[i]+'">'+json_list[i]+'</option>');
