@@ -20,9 +20,9 @@ coll = None
 class Application(tornado.web.Application):
   def __init__(self):
     handlers=[
-      (r"/", MainHandler),
-      (r"/add", NewGoalHandler),
-      (r"/delete/([\w]+)", DeleteGoalHandler),
+      (r"/([\w]*)", MainHandler),
+      (r"/add/([\w]*)", AddHandler),
+      (r"/delete/([\w]+)", DeleteHandler),
       (r"/activate/([\w]+)", ActivateHandler),
       (r"/deactivate/([\w]+)", DeactivateHandler),
     ]
@@ -35,9 +35,33 @@ class Application(tornado.web.Application):
     tornado.web.Application.__init__(self,handlers,**settings)
 
 class MainHandler(tornado.web.RequestHandler):
-  def get(self):
+  def get(self,collection):
+    if collection == "collections":
+      self.write(str(get_collection_list()))
+      return
     #goals is a cursor object
-    goals_cursor = coll.find({'title' : {'$exists':True}},{'deleted':0}) #title is required in goals.html
+    print "collection: %s" % str(collection)
+    if collection:
+      goals_cursor = coll.find(
+        {'$and': [
+          {'title' : {'$exists':True}}, #title is required in goals.html
+          {'deleted':0},
+          {'collection': {'$exists':True}},
+          {'collection': collection},
+        ]}
+      )
+    else:
+      #if no collection is specified in the url
+      goals_cursor = coll.find(
+        {'$and': [
+          {'title' : {'$exists':True}}, #title is required in goals.html
+          {'deleted':0},
+          {'$or': [
+            {'collection': {'$exists':False}},
+            {'collection': collection},
+          ]}
+        ]}
+      )
     print "found %s goals" % str(goals_cursor.count())
     
     #Build list of goals, active ones at the top
@@ -47,17 +71,18 @@ class MainHandler(tornado.web.RequestHandler):
         goals.insert(0,goal)
       else:
         goals.append(goal)
-    
+    print "goals list: %s" % goals
     self.render(
       "index.html",
       page_title = "Here's a page",
+      collection = collection,
       header_text = "Goal List",
       footer_text = "Site by Matt Parlette",
       goals = goals,
     )
 
-class NewGoalHandler(tornado.web.RequestHandler):
-  def post(self):
+class AddHandler(tornado.web.RequestHandler):
+  def post(self,collection):
     goal = self.get_argument('goal','')
     print str(goal)
     insert_id = coll.insert({
@@ -66,11 +91,12 @@ class NewGoalHandler(tornado.web.RequestHandler):
       'done': 0,
       'deleted': 0,
       'active': 0,
+      'collection': collection,
     })
     print "Successfully added %s" % (str(insert_id))
-    self.redirect("/")
+    self.redirect("/%s" % collection)
 
-class DeleteGoalHandler(tornado.web.RequestHandler):
+class DeleteHandler(tornado.web.RequestHandler):
   def post(self,id):
     print "deleting goal (id %s)" % str(id)
     coll.update(
@@ -105,6 +131,25 @@ class DeactivateHandler(tornado.web.RequestHandler):
         '$set': {'active': 0},
       }
     )
+
+def get_collection_list():
+  """Reply with a list of collections available for the user"""
+  print "retrieving collections"
+  
+  #goals is a cursor object
+  cursor = coll.find(
+    {'collection':{'$exists':True}},
+  )
+  
+  print "found %s goals" % str(cursor.count())
+  
+  #Build list of collections
+  collections = list()
+  for entry in cursor:
+    if entry['collection'] not in collections:
+      collections.append(entry['collection'])
+  print "collections list: %s" % collections
+  return tornado.escape.json_encode(collections)
 
 if __name__ == "__main__":
   db = pymongo.Connection()['test']

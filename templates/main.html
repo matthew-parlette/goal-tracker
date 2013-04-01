@@ -4,6 +4,9 @@
   <link rel="stylesheet" href="{{ static_url("site.css") }}" type="text/css"/>
 </head>
 <body>
+  <div id="toolbar">
+    {% block toolbar %}{% end %}
+  </div>
 	<div id="container">
 		<header>
 			{% block header %}<h1>Hello.</h1>{% end %}
@@ -30,7 +33,6 @@
   function activate(id){
     $.post("/activate/"+id);
     $('#'+id).removeClass('inactive').addClass('active');
-    //$('#'+id > '.enable').replaceWith('<a class="enable" href="javascript:deactivate("{{goal["_id"]}}")">deactivate</a>');
   }
   function deactivate(id){
     $.post("/deactivate/"+id);
@@ -40,5 +42,24 @@
     if($('#'+id).hasClass('active')){deactivate(id);}
     else{activate(id);}
   }
+  function build_collections(json_list){
+    for (var i in json_list) {
+      $('#select_collection').append('<option value="'+json_list[i]+'">'+json_list[i]+'</option>');
+    }
+    //activate the select box
+    $('#select_collection').change(function(){
+      window.location = "/"+$(this).val();
+    });
+  }
   $('.goal').click(function(event){toggle(event.target.id);})
+  $(document).ready(function() {
+    //Get collection list
+    $.ajax({
+      url: "/collections",
+      type: "GET",
+      dataType: "json",
+      success: build_collections,
+      //complete: function (xhr,status){alert("request complete");}
+    });
+  });
 </script>

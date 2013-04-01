@@ -1,5 +1,14 @@
 {% extends "main.html" %}
 
+{% block toolbar %}
+  <div>
+    <form>
+      <label for="collection">Collection</label>
+      <select id="select_collection" name="collection"><option value="{{collection}}" selected>{{collection}}</option></select>
+    </form>
+  </div>
+{% end %}
+
 {% block header %}
   <hr>
 	<h1>{{ header_text }}</h1>
@@ -10,7 +19,7 @@
 		{% for goal in goals %}
       {% module Template("goal.html", goal=goal) %}
     {% end %}
-    {% module Template("add.html") %}
+    {% module Template("add.html",collection=collection) %}
 {% end %}
 
 {% block footer %}

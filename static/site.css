@@ -24,12 +24,44 @@ header h1 {
 }
 
 body {
-  background-color: #2A120A;
+  background-color: black;
+  /*#2A120A;*/
 }
 
 footer a{
   font-variant: small-caps;
   font-size: .8em;
+}
+
+#toolbar {
+  width: 100%;
+  margin: 0;
+  background-color: #2A120A;
+  height: 1.5em;
+  border: 1px solid blue;
+  top: 0;
+  left: 0;
+  position: fixed;
+  overflow: hidden;
+}
+
+#toolbar label {
+  color: white;
+  font-size: .8em;
+  font-variant: small-caps;
+}
+
+#toolbar form {
+  float: right;
+  margin-right: 2%;
+}
+
+#toolbar select {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #FF00FF;
+  font-variant: small-caps;
 }
 
 #container {
@@ -95,4 +127,8 @@ footer {
 .add input{
   font-variant: small-caps;
   width: 100%;
+}
+
+.right {
+  float: right;
 }
