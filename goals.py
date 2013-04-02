@@ -13,6 +13,8 @@ define("port", default=8000, help="run on the given port", type=int)
 #Globals
 db = None
 coll = None
+database_name = 'goals'
+collection_name = 'goals'
 
 #Notes
 #Quick pymongo reference: http://www.youlikeprogramming.com/2010/12/python-and-mongodb-using-pymongo-quick-reference/
@@ -170,8 +172,8 @@ def get_collection_list():
   return tornado.escape.json_encode(collections)
 
 if __name__ == "__main__":
-  db = pymongo.Connection()['test']
-  coll = db['test']['goals']
+  db = pymongo.Connection()[database_name]
+  coll = db[database_name][collection_name]
   
   app = Application()
   app.listen(options.port)
