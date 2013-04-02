@@ -36,9 +36,8 @@ footer a{
 #toolbar {
   width: 100%;
   margin: 0;
-  background-color: #2A120A;
+  background-color: black;
   height: 1.5em;
-  border: 1px solid blue;
   top: 0;
   left: 0;
   position: fixed;

@@ -19,6 +19,7 @@
 		{% for goal in goals %}
       {% module Template("goal.html", goal=goal) %}
     {% end %}
+    <br><hr>
     {% module Template("add.html",collection=collection) %}
 {% end %}
 
